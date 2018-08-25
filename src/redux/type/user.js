@@ -7,5 +7,8 @@ export default {
   logOutDone: 'LOGOUT_USER_FULFILLED',
   update: 'UPDATE_USER',
   updateRejected: 'UPDATE_USER_REJECTED',
-  updateDone: 'UPDATE_USER_FULFILLED'
+  updateDone: 'UPDATE_USER_FULFILLED',
+  count: 'COUNT',
+  countRejected: 'COUNT_REJECTED',
+  countDone: 'COUNT_FULFILLED'
 }

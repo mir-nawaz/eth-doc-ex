@@ -18,6 +18,7 @@ export default class Profile extends Component {
     this.state = {
       submitted: false,
       readOnly: true,
+      price0: props.user.details.type === 1, // for requester price should be zero
       name: props.user.details.name,
       email: props.user.details.email,
       invalidEmail: false,
@@ -45,10 +46,21 @@ export default class Profile extends Component {
       [e.target.name]: e.target.value
     });
   };
+  onTypeChange = (e) => {
+    const value = e.target.value;
+    this.setState({
+      [e.target.name]: value
+    });
+    if(value === '1'){
+      this.setState({price0: true, price: 0})
+    }else{
+      this.setState({price0: false})
+    }
+  };
   onSubmit = (event) =>{
     event.preventDefault();
     this.setState({submitted: true});
-    if(this.state.name && this.state.email && regex.email(this.state.email) && this.state.description && this.state.type !== null && this.state.price && this.state.logo){
+    if(this.state.name && this.state.email && regex.email(this.state.email) && this.state.description && this.state.type !== null && this.state.logo){
       const payload =  {
         name: this.state.name,
         email: this.state.email,
@@ -59,7 +71,7 @@ export default class Profile extends Component {
         account: this.props.user.details.account
       };
       this.props.dispatch(update(payload));
-      this.setState({urlLogo: this.props.user.details.image, readOnly: true});
+      this.setState({readOnly: true});
     }
   };
   emailError = () =>{
@@ -126,7 +138,7 @@ export default class Profile extends Component {
             <div className='row'>
               <label htmlFor='select' className='col-4 col-form-label'>Type</label>
               <div className='col-8'>
-                <select name='type' className='custom-select' disabled={this.state.readOnly} onChange={this.onChange} defaultValue={this.state.type}>
+                <select name='type' className='custom-select' disabled={this.state.readOnly} onChange={this.onTypeChange} defaultValue={this.state.type}>
                   <option selected disabled hidden>Choose here</option>
                   {this.state.types.map((type, index) => (<option value={type.value} key={index}>{type.label}</option>))}
                 </select>
@@ -136,10 +148,9 @@ export default class Profile extends Component {
           </div>
           <div className='col-6 padding-top-15'>
             <div className='row'>
-              <label htmlFor='select' className='col-4 col-form-label'>Price</label>
+              <label htmlFor='select' className='col-4 col-form-label'>Price <span className='unit'>(wei)</span> </label>
               <div className='col-8'>
-                <input className='form-control' name='price' type='number' readOnly={this.state.readOnly} onChange={this.onChange} defaultValue={this.state.price} />
-                {this.state.submitted && !this.state.price && (<p className='error-msg'>{this.state.errors.price}</p>)}
+                <input className='form-control' name='price' type='number' readOnly={this.state.readOnly || this.state.price0} onChange={this.onChange} value={this.state.price} />
               </div>
             </div>
           </div>
@@ -157,8 +168,8 @@ export default class Profile extends Component {
             <div className='row'>
               <label htmlFor='select' className='col-4 col-form-label'>Avatar</label>
               <div className='col-8'>
-                <a href={this.state.urlLogo} target='_blank' className='width-in'>
-                  <img src={this.state.urlLogo} className='width-in pointer' onError={(e)=>{e.target.src=defaultImg}}/>
+                <a href={this.props.user.details.image} target='_blank' className='width-in'>
+                  <img src={this.props.user.details.image} className='avatar-size pointer' onError={(e)=>{e.target.src=defaultImg}}/>
                 </a>
               </div>
             </div>

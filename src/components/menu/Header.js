@@ -19,7 +19,7 @@ class Header extends Component {
     this.active = '';
   }
   shouldComponentUpdate(nextProps){
-    return nextProps.user !== this.props.user;
+    return nextProps.user !== this.props.user || this.props.location.pathname !== nextProps.location.pathname;
   }
   dropDown = () => {
     if(!isEmpty(this.menu.dropDown)){

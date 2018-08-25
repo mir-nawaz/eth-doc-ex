@@ -1,6 +1,6 @@
 
 export default {
-  isAuthenticated: false,
+  isAuthenticated: true,
   user: {
     account: null
   },

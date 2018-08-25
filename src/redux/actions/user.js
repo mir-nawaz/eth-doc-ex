@@ -49,18 +49,48 @@ export function update(payload) {
     ipfs.add(payload.logo)
       .then((res) => {
         ipfsHash = get(res, '[0].hash', '');
-        return contract.accounts.register(payload.name, payload.email, ipfsHash, payload.description, payload.type, payload.price, {from: payload.account});
+        if(!ipfsHash){
+          throw new Error('IPFS file upload error occurred');
+        }
+        payload.type = payload.type || 0;
+        payload.price = payload.price || 0;
+        payload.price = +payload.price;
+        payload.type = +payload.type;
+        return contract.accounts.register.estimateGas(payload.name, payload.email, ipfsHash, payload.description, payload.type, payload.price, {from: payload.account});
+      })
+      .then((gas)=>{
+        return contract.accounts.register(payload.name, payload.email, ipfsHash, payload.description, payload.type, payload.price, {from: payload.account, gasLimit: gas});
       })
       .then(()=>{
-        return contract.accounts.getAccount({from: payload.account});
-      })
-      .then(()=>{
-        payload.image = ipfsConst.url + ipfsHash;
-        dispatch({type: userType.updateDone, payload: payload});
+        const registeredEvent = contract.accounts.Registered();
+        registeredEvent.watch((error) => {
+          if (error){
+            throw new Error('Account Register event has error occurred');
+          }
+          payload.image = ipfsConst.url + ipfsHash;
+          dispatch({type: userType.updateDone, payload: payload});
+        });
       })
       .catch((err)=>{
-        console.log(err);
         dispatch({type: userType.updateRejected, payload: err})
+      });
+  }
+}
+
+export function count(payload) {
+  return function(dispatch) {
+    dispatch({type: userType.count});
+    contract.documents.getCounts(payload.account, {from: payload.account})
+      .then((res)=>{
+        const count = {
+          verified: get(res, '[0].c[0]', 0),
+          rejected: get(res, '[1].c[0]', 0),
+          total: get(res, '[2].c[0]', 0)
+        };
+        dispatch({type: userType.countDone, payload: count});
+      })
+      .catch((err)=>{
+        dispatch({type: userType.countRejected, payload: err})
       });
   }
 }

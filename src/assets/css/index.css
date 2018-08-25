@@ -48,12 +48,48 @@ body {
 .padding-top-15 {
   padding-top: 15px;
 }
-.width-in{
-  width: inherit;
+.avatar-size{
+  max-height: 150px;
+  max-width: 300px;
 }
 .margin-left-12{
   margin-left: 12px;
 }
 .btn{
   border-radius: 0 !important;
+}
+.padding-bottom-16 {
+  padding-bottom: 16px;
+}
+.progress{
+  border-radius: 0 !important;
+}
+.card{
+  border-radius: 0 !important;
+}
+
+hr {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+.float-right{
+    float: right;
+}
+.clear {
+    clear: both;
+}
+.doc-count{
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: darkgray;
+}
+.unit{
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: darkgray;
+}
+.margin-right-12{
+  margin-right: 12px;
 }
