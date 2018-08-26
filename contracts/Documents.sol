@@ -3,6 +3,7 @@ pragma solidity ^0.4.24;
 import "./StringUtils.sol";
 import "./Accounts.sol";
 
+/** @title Documents. */
 contract Documents {
     
   address private owner;
@@ -30,6 +31,10 @@ contract Documents {
   event DocumentAdded (address user);
   event DocumentVerified (address user);
   event test (uint test);
+
+  /** @dev check for document address exists.
+      * @param _docAddress document address.
+      */
   modifier docAddressExists(string _docAddress) 
   {
     bool found = false;
@@ -42,10 +47,18 @@ contract Documents {
     require(!found);
     _;
   }
+
+  /** @dev check for user paid enough.
+      * @param addr user address.
+      */
   modifier paidEnough(address addr) { 
     require(msg.value >= Accounts(accountsAddress).getPrice(addr));
     _;
   }
+
+  /** @dev refund extra amount sent.
+      * @param addr user address.
+      */
   modifier refund(address addr) {
     //refund extra ether received
     _;
@@ -57,13 +70,19 @@ contract Documents {
         balances[addr] += price;
     }
   }
+
   constructor(address acctAddr) 
   public 
   {
     owner = msg.sender;
     accountsAddress = acctAddr;
   }
-
+  /** @dev add document.
+      * @param _verifier verifier address.
+      * @param _name document name.
+      * @param _description document _description.
+      * @param _docAddress document _docAddress.
+      */
   function addDocument(address _verifier, string _name, string _description, string _docAddress) 
   public 
   payable
@@ -87,7 +106,15 @@ contract Documents {
     counts[msg.sender].total = counts[msg.sender].total + 1;
     counts[_verifier].total = counts[_verifier].total + 1;
   }
-  
+
+  /** @dev get document.
+      * @param docAddress document address.
+      * @return name document name.
+      * @return requester document requester.
+      * @return verifier document verifier.
+      * @return description document description.
+      * @return status document status.
+      */
   function getDocument(string docAddress) 
   public 
   view 
@@ -105,6 +132,16 @@ contract Documents {
     return (name, requester, verifier, description, status);
   }
   
+  /** @dev get Verifier document.
+      * @param _verifier user address.
+      * @param lIndex document index.
+      * @return name document name.
+      * @return requester document requester.
+      * @return description document description.
+      * @return docAddress document docAddress.
+      * @return status document status.
+      * @return index document index.
+      */  
   function getVerifierDocuments(address _verifier, uint lIndex) 
   public 
   view 
@@ -123,6 +160,16 @@ contract Documents {
     return (name, requester, description, docAddress, status, index);
   }
   
+  /** @dev get requester document.
+      * @param _requester user address.
+      * @param lIndex document index.
+      * @return name document name.
+      * @return verifier document verifier.
+      * @return description document description.
+      * @return docAddress document docAddress.
+      * @return status document status.
+      * @return index document index.
+      */  
   function getRequesterDocuments(address _requester, uint lIndex) 
   public 
   view 
@@ -141,6 +188,10 @@ contract Documents {
     return (name, verifier, description, docAddress, status, index);
   }
   
+  /** @dev verify document.
+      * @param docAddress document address.
+      * @param status document status.
+      */   
   function verifyDocument(string docAddress, DocStatus status) 
   public 
   payable
@@ -168,6 +219,12 @@ contract Documents {
     }
   }
 
+  /** @dev get count for users.
+      * @param account user address.
+      * @return verified count.
+      * @return rejected count.
+      * @return total count.
+      */ 
   function getCounts (address account) 
   public 
   view
@@ -176,4 +233,11 @@ contract Documents {
     return (counts[account].verified, counts[account].rejected, counts[account].total);
   }
 
+  /** @dev kill smart contract if something bad happens.
+      */
+  function kill() 
+  public 
+  {
+    if (msg.sender == owner) selfdestruct(owner);
+  }
 }
