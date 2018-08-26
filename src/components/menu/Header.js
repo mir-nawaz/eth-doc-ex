@@ -55,7 +55,7 @@ class Header extends Component {
             Object.keys(this.menu.list).map((item) => {
               return (
                 <li className={this.active === this.menu.list[item].url ? 'nav-item active' : 'nav-item'} key={item}>
-                  <Link to={this.menu.list[item].url} className='nav-link'>{this.menu.list[item].label}</Link>
+                  {this.menu.list[item].menu && (<Link to={this.menu.list[item].url} className='nav-link'>{this.menu.list[item].label}</Link>)}
                 </li>
               );
             })

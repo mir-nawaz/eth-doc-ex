@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { verifiers } from "../../redux/actions/documents";
 import { create } from "../../redux/actions/documents";
+import Loader from "../common/Loader";
+import menu from "../../constants/menu";
+import {Redirect} from "react-router-dom";
 
 @connect((store) => {
   return {
     verifiers: store.documents.verifiers,
+    loading: store.documents.loading,
     user: store.user
   };
 })
@@ -15,6 +19,9 @@ export default class DocumentCreate extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      redirect: false,
+      documents: menu.documents,
+      url: '',
       name: '',
       description: '',
       verifier: '',
@@ -30,6 +37,12 @@ export default class DocumentCreate extends Component {
   }
   componentDidMount(){
     this.props.dispatch(verifiers({account: this.props.user.details.account}));
+  }
+  componentWillUpdate(nextProps){
+    if(this.state.redirect && !nextProps.loading){
+      this.props.back();
+    }
+    return true;
   }
   onChange = (e) => {
     this.setState({
@@ -68,11 +81,19 @@ export default class DocumentCreate extends Component {
         rate: this.state.rate
       };
       this.props.dispatch(create(payload));
+      this.setState({redirect: true})
     }
   };
+  back = () =>{
+    this.setState({redirect: true, url: this.state.documents.list})
+  };
   render() {
+    if(this.props.loading)
+      return (<Loader />);
+    if(this.state.redirect)
+      return (<Redirect to={this.state.url}/>);
     return (
-      <div>
+      <div className='container'>
         <div className='form-group row padding-40'>
           <div className='col-6'>
             <div className='row'>
@@ -124,7 +145,7 @@ export default class DocumentCreate extends Component {
         </div>
         <div className='float-right'>
           <button type="button" className="btn btn-success margin-right-12" onClick={this.onSubmit}>Submit</button>
-          <button type="button" className="btn btn-info" onClick={this.props.back}>Back</button>
+          <button type="button" className="btn btn-info" onClick={this.back}>Back</button>
         </div>
         <div className='clear'> </div>
       </div>

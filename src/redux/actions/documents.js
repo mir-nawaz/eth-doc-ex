@@ -67,3 +67,102 @@ export function create(payload) {
       });
   }
 }
+
+export function requesterDocs(payload) {
+  return function(dispatch) {
+    dispatch({type: documentsType.requesterDocs});
+    const promises = [];
+    for(let index = 0; index < payload.total; index++){
+      promises.push(contract.documents.getRequesterDocuments(payload.account, index, {from: payload.account}))
+    }
+    Promise.all(promises)
+      .then((res)=>{
+        const docs = [];
+        for(const doc of res){
+          docs.push({
+            name: doc[0],
+            verifier: doc[1],
+            description: doc[2],
+            address: doc[3],
+            link: ipfsConst.url + doc[3],
+            status: doc[4].c[0]
+          });
+        }
+        dispatch({type: documentsType.requesterDocsDone, payload: docs});
+      })
+      .catch((err)=>{
+        dispatch({type: documentsType.requesterDocsRejected, payload: err})
+      });
+  }
+}
+export function verifierDocs(payload) {
+  return function(dispatch) {
+    dispatch({type: documentsType.verifierDocs});
+    const promises = [];
+    for(let index = 0; index < payload.total; index++){
+      promises.push(contract.documents.getVerifierDocuments(payload.account, index, {from: payload.account}))
+    }
+    Promise.all(promises)
+      .then((res)=>{
+        const docs = [];
+        for(const doc of res){
+          docs.push({
+            name: doc[0],
+            verifier: doc[1],
+            description: doc[2],
+            docAddress: doc[3],
+            link: ipfsConst.url + doc[3],
+            status: doc[4].c[0]
+          });
+        }
+        dispatch({type: documentsType.verifierDocsDone, payload: docs});
+      })
+      .catch((err)=>{
+        dispatch({type: documentsType.verifierDocsRejected, payload: err})
+      });
+  }
+}
+export function verifyDoc(payload) {
+  return function(dispatch) {
+    dispatch({type: documentsType.verifyDocs});
+    contract.documents.verifyDocument.estimateGas(payload.docAddress, payload.status, {from: payload.account})
+      .then((gas)=> {
+        return contract.documents.verifyDocument(payload.docAddress, payload.status, {from: payload.account, gasLimit: gas})
+      }).then(() => {
+        const documentVerifiedEvent = contract.documents.DocumentVerified();
+        documentVerifiedEvent.watch((error) => {
+          if (error){
+            throw new Error('Document verify event has error occurred');
+          }
+          dispatch({type: documentsType.verifyDocsDone});
+        });
+      })
+      .catch((err)=>{
+        dispatch({type: documentsType.verifyDocsRejected, payload: err})
+      });
+  }
+}
+
+export function getDocument(payload) {
+  return function(dispatch) {
+    dispatch({type: documentsType.getDoc});
+    contract.documents.getDocument(payload.docAddress, {from: payload.account})
+      .then((res) => {
+        const requester = get(res, '[1]');
+        const verifier = get(res, '[2]');
+        const invalid = requester === "0x0000000000000000000000000000000000000000" || verifier === "0x0000000000000000000000000000000000000000";
+        const doc = {
+          name: get(res, '[0]', ''),
+          requester: requester,
+          verifier: verifier,
+          status: get(res, '[4].c[0]', false),
+          link: ipfsConst.url + payload.docAddress,
+          valid: !invalid
+        };
+        dispatch({type: documentsType.getDocDone, payload: doc});
+      })
+      .catch((err)=>{
+        dispatch({type: documentsType.getDocRejected, payload: err})
+      });
+  }
+}

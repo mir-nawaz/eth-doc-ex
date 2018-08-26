@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Requester from './Requester';
-import Verifier from './Verifier';
-import Create from './Create';
 import {count} from "../../redux/actions/user";
 import {calcPercentage} from '../../utils/math';
+import Loader from "../common/Loader";
+import {Redirect} from "react-router-dom";
+import menu from "../../constants/menu";
 
 @connect((store) => {
   return {
@@ -17,6 +17,8 @@ export default class Main extends Component {
     super(props);
     const count = calcPercentage(props.user.count);
     this.state = {
+      documents: menu.documents,
+      url: '',
       countPer: {
         rejected: count.rejected,
         verified: count.verified,
@@ -25,7 +27,7 @@ export default class Main extends Component {
       count: props.user.count,
       isRequester: props.user.details.type === 1,
       isVerifier: props.user.details.type === 0,
-      showCreateScreen: true
+      showCreateScreen: false
     }
   }
   componentDidMount(){
@@ -34,11 +36,20 @@ export default class Main extends Component {
   componentWillReceiveProps(nextProps){
     this.setState({count: nextProps.user.count, countPer: calcPercentage(nextProps.user.count)});
   }
-  createScreen = (event) => {
-    event.preventDefault();
-    this.setState({showCreateScreen: !this.state.showCreateScreen})
+  createScreen = () => {
+    this.setState({redirect: true, url: this.state.documents.create})
+  };
+  list = () => {
+    if(this.state.isRequester)
+      this.setState({redirect: true, url: this.state.documents.requester});
+    if(this.state.isVerifier)
+      this.setState({redirect: true, url: this.state.documents.verifier})
   };
   render() {
+    if(this.props.user.loading)
+      return (<Loader/>);
+    if(this.state.redirect)
+      return (<Redirect to={this.state.url}/>);
     return (
       <div className='container'>
         <div className='row align-center'>
@@ -46,9 +57,9 @@ export default class Main extends Component {
             <h2> Documents <span className='doc-count'>{this.state.count.total}</span></h2>
           </div>
         </div>
-        <div className='row'>
+        <div className='row' onClick={this.list}>
           <div className='col-4'>
-            <div className='card text-white bg-success mb-3' >
+            <div className='card text-white bg-success mb-3 pointer' >
               <div className='card-header'>Verified</div>
               <div className='card-body'>
                 <h5 className='card-title'>
@@ -64,7 +75,7 @@ export default class Main extends Component {
             </div>
           </div>
           <div className='col-4'>
-            <div className='card text-white bg-danger mb-3' >
+            <div className='card text-white bg-danger mb-3 pointer' >
               <div className='card-header'>Rejected</div>
               <div className='card-body'>
                 <h5 className='card-title'>{this.state.count.rejected}</h5>
@@ -78,7 +89,7 @@ export default class Main extends Component {
             </div>
           </div>
           <div className='col-4'>
-            <div className='card text-white bg-warning mb-3' >
+            <div className='card text-white bg-warning mb-3 pointer' >
               <div className='card-header'>Pending</div>
               <div className='card-body'>
                 <h5 className='card-title'>
@@ -94,17 +105,14 @@ export default class Main extends Component {
             </div>
           </div>
         </div>
-        <hr/>
-        {this.state.isRequester && (<div>
-          <div className='float-right'>
-            <button type="button" className="btn btn-secondary" onClick={this.createScreen}>Create</button>
-          </div>
-          <div className='clear'> </div>
+        {this.state.isRequester && (
+          <div>
+            <div className='float-right'>
+              <button type="button" className="btn btn-secondary" onClick={this.createScreen}>Create</button>
+            </div>
+            <div className='clear'> </div>
           </div>
           )}
-        {this.state.isRequester && this.state.showCreateScreen && (<Create back={this.createScreen}/>)}
-        {this.state.isRequester && !this.state.showCreateScreen && (<Requester/>)}
-        {this.state.isVerifier && !this.state.showCreateScreen  && (<Verifier/>)}
       </div>
     );
   }

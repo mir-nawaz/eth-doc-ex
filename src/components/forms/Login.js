@@ -36,9 +36,7 @@ export default class Login extends Component {
     this.setState({submitted: true});
     if(this.state.account){
       this.props.dispatch(auth({account: this.state.account}));
-      if(!this.props.user.loading){
-        this.setState({redirect: true});
-      }
+      this.setState({redirect: true});
     }
   };
   onChange = (e) => {
@@ -48,11 +46,10 @@ export default class Login extends Component {
   };
 
   render() {
-    if(this.state.redirect){
-      return (<Redirect to={this.state.home}/>)
-    }
     if(this.props.user.loading)
       return (<Loader/>);
+    if(this.state.redirect)
+      return (<Redirect to={this.state.home}/>);
     return (
       <div className='container align-center'>
         <div className='row'>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import '../../assets/css/loader.css';
 
-export default class LoaderWave extends Component {
+export default class Loader extends Component {
 
   render() {
     return (

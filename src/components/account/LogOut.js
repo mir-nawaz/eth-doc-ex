@@ -34,11 +34,9 @@ export default class LogOut extends Component {
     if(this.props.user.loading)
       return (<Loader/>);
     return (
-      <div className='container'>
-        <p>LogOut</p>
-        <p>LogOut</p>
-        <p>LogOut</p>
-        <button onClick={this.logOut}>LogOut</button>
+      <div className='container align-center'>
+        <p>Continue to Logout </p>
+        <button type="button" className="btn btn-secondary" onClick={this.logOut}>LogOut</button>
       </div>
     );
   }

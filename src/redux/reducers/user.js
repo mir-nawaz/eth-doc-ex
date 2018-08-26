@@ -11,16 +11,6 @@ export default function reducer(state={
     price: null
   },
   isAuthenticated: false,
-  // details: {
-  //   account: "0x2163F102d1bcf634b6C17dab3f9a0eABADDf10f0",
-  //   name: "Test",
-  //   email: "test-8@us.com",
-  //   image: "https://gateway.ipfs.io/ipfs/QmbHjT6J8ycyphtf5vszK7Hhn6tQEaR5ozNmkbQeYzEJJQ",
-  //   description: "test account",
-  //   type: 1,
-  //   price: 0
-  // },
-  // isAuthenticated: true,
   count:{
     total: 0,
     rejected: 0,
@@ -38,6 +28,7 @@ export default function reducer(state={
         return {...state, loading: false, error: action.payload}
       }
       case user.getDone: {
+        console.log(action.payload.user);
         return {
           ...state,
           loading: false,
