@@ -5,18 +5,11 @@ const expect = require('./helpers/expect');
 
 contract('Accounts', function(accounts) {
 
-<<<<<<< Updated upstream
   const verifier1 = accounts[1];
   const verifier2 = accounts[2];
   const requester = accounts[3];
   const requester2 = accounts[4];
 
-=======
-  const owner = accounts[0]; // eslint-disable-line
-  const account1 = accounts[1];
-  const account2 = accounts[2]; // eslint-disable-line
-  const emptyAddress = '0x0000000000000000000000000000000000000000'; // eslint-disable-line 
->>>>>>> Stashed changes
   const account = {
     name: 'FAST',
     email: 'fast@edu.pk',
@@ -24,7 +17,6 @@ contract('Accounts', function(accounts) {
     description: 'Karachi',
     type: 0,
     verificationPrice: 10000
-<<<<<<< Updated upstream
   };
   const account2 = {
     name: 'NUST',
@@ -49,8 +41,6 @@ contract('Accounts', function(accounts) {
     description: 'Karachi',
     type: 1,
     verificationPrice: 0
-=======
->>>>>>> Stashed changes
   };
 
   it('...should register a valid verifier information.', async() => {
@@ -70,11 +60,7 @@ contract('Accounts', function(accounts) {
       eventEmitted = true;
     });
 
-<<<<<<< Updated upstream
     await accounts.register(account.name, account.email, account.logo, account.description, account.type, account.verificationPrice, { from: verifier1 });
-=======
-    await accounts.register(account.name, account.email, account.logo, account.description, account.type, account.verificationPrice, { from: account1 });
->>>>>>> Stashed changes
 
     const result = await accounts.getAccount.call({ from: verifier1 });
 
@@ -101,27 +87,11 @@ contract('Accounts', function(accounts) {
 
   });
 
-  it('...should not register with same email address.', async() => {
-
-    const accounts = await Accounts.deployed();
-
-<<<<<<< Updated upstream
-    await expect.throwError(accounts.register(account.name, account.email, account.logo, account.description, account.type, account.verificationPrice, { from: verifier1 }));
-=======
-    await expect.throwError(accounts.register(account.name, account.email, account.logo, account.description, account.type, account.verificationPrice, { from: account1 }));
->>>>>>> Stashed changes
-
-  });
-
   it('...should not register with invalid email address.', async() => {
 
     const accounts = await Accounts.deployed();
 
-<<<<<<< Updated upstream
     await expect.throwError(accounts.register(account.name, 'invalid-email', account.logo, account.description, account.type, account.verificationPrice, { from: verifier1 }));
-=======
-    await expect.throwError(accounts.register(account.name, 'invalid-email', account.logo, account.description, account.type, account.verificationPrice, { from: account1 }));
->>>>>>> Stashed changes
 
   });
 
