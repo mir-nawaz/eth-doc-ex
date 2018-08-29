@@ -1,6 +1,18 @@
 # Ethereum Solidity React Document Exchange
 > It's how _I_ like it, fork before using it.
 
+## Prerequisites
+
+- node -v 
+    - v8.11.4
+- npm --version 
+    - 5.6.0   
+- truffle version  
+    - Truffle v4.1.14 (core: 4.1.14)
+    - Solidity v0.4.24 (solc-js)
+- ganache-cli --version
+    - Ganache CLI v6.1.8 (ganache-core: 2.2.1)    
+    
 ### Setup
 ```bash
   # clone the repository
@@ -11,14 +23,14 @@
   $ npm install -g ganache-cli truffle
   # open a new terminal, run below command and keep it alive
   $ ganache-cli
-  # install node moduels
+  # run solidity unit tests to check if environment is ready
+  $ truffle test
+  # install node modules
   $ npm install
   # compile smart contracts
   $ npm run recompile
   # once compile is complete run react app
   $ npm run start
-  # run solidity unit tests
-  $ truffle test
 ```
 
 ### Available Scripts

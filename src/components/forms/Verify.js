@@ -77,7 +77,7 @@ export default class Verify extends Component {
           </div>
           <div className='col-6'>
             <div className='row'>
-              <label htmlFor='select' className='col-4 col-form-label'>Document</label>
+              <label htmlFor='select' className='col-4 col-form-label'>Document Address</label>
               <div className='col-8'>
                 <input className='form-control' name='document' type='text' onChange={this.onChange} defaultValue={this.state.document}/>
                 {this.state.submitted && !this.state.document && (<p className='error-msg'>{this.state.errors.document}</p>)}

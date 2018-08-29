@@ -30,7 +30,7 @@ export default class Verifier extends Component {
       total: this.props.user.count.total
     }));
     if (!this.state.isVerifier)
-      this.setState({redirect: true, url: this.state.documents.list})
+      this.back();
   }
 
   verifyDoc = (docAddress, status) => {
@@ -39,7 +39,7 @@ export default class Verifier extends Component {
       docAddress: docAddress,
       status: status
     }));
-    this.setState({redirect: true, url: this.state.documents.list});
+    this.back();
   };
   back = () =>{
     this.setState({redirect: true, url: this.state.documents.list});
@@ -81,8 +81,8 @@ export default class Verifier extends Component {
                             <a className='dropdown-item' href={doc.link} target='_blank'> View </a>
                             {doc.status === 0 && (
                               <div>
-                                <span className="dropdown-item Rejected" onClick={() => this.verifyDoc(doc.docAddress, 2)}>Reject</span>
-                                <span className="dropdown-item Verified" onClick={() => this.verifyDoc(doc.docAddress, 1)}>Verify</span>
+                                <span className="dropdown-item Rejected pointer" onClick={() => this.verifyDoc(doc.docAddress, 2)}>Reject</span>
+                                <span className="dropdown-item Verified pointer" onClick={() => this.verifyDoc(doc.docAddress, 1)}>Verify</span>
                               </div>
                               )}
                           </div>

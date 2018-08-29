@@ -28,10 +28,10 @@ export default class Requester extends Component {
   componentDidMount(){
     this.props.dispatch(requesterDocs({account: this.props.user.details.account, total: this.props.user.count.total}));
     if (!this.state.isRequester)
-      this.setState({redirect: true, url: this.state.documents.list})
+      this.back();
   }
   back = () =>{
-    this.setState({redirect: true, url: this.state.documents.list})
+    this.setState({redirect: true, url: this.state.documents.list});
   };
   render() {
     if(this.props.documents.loading)

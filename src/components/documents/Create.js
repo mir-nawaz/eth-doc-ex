@@ -14,7 +14,6 @@ import {Redirect} from "react-router-dom";
   };
 })
 
-
 export default class DocumentCreate extends Component {
   constructor(props) {
     super(props);
@@ -40,7 +39,7 @@ export default class DocumentCreate extends Component {
   }
   componentWillUpdate(nextProps){
     if(this.state.redirect && !nextProps.loading){
-      this.props.back();
+      this.back();
     }
     return true;
   }
@@ -90,7 +89,7 @@ export default class DocumentCreate extends Component {
   render() {
     if(this.props.loading)
       return (<Loader />);
-    if(this.state.redirect)
+    if(this.state.redirect && this.state.url)
       return (<Redirect to={this.state.url}/>);
     return (
       <div className='container'>
