@@ -4,6 +4,7 @@ import ipfs from '../../utils/ipfs';
 import contract from '../../constants/contracts';
 import ipfsConst from '../../constants/ipfs';
 import get from 'lodash/get';
+import web3 from '../../constants/web3';
 
 export function auth(payload) {
   return function(dispatch) {
@@ -91,6 +92,19 @@ export function count(payload) {
       })
       .catch((err)=>{
         dispatch({type: userType.countRejected, payload: err})
+      });
+  }
+}
+export function getTransactions(payload) {
+  return function(dispatch) {
+    dispatch({type: userType.getTransactions});
+    contract.documents.getCounts(payload.account, {from: payload.account})
+      .then((res)=>{
+        const transactions = [];
+        dispatch({type: userType.getTransactionsDone, payload: transactions});
+      })
+      .catch((err)=>{
+        dispatch({type: userType.getTransactionsRejected, payload: err})
       });
   }
 }

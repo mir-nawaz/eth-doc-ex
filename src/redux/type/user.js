@@ -10,5 +10,8 @@ export default {
   updateDone: 'UPDATE_USER_FULFILLED',
   count: 'COUNT',
   countRejected: 'COUNT_REJECTED',
-  countDone: 'COUNT_FULFILLED'
+  countDone: 'COUNT_FULFILLED',
+  getTransactions: 'GET_TRANSACTIONS',
+  getTransactionsRejected: 'GET_TRANSACTIONS_REJECTED',
+  getTransactionsDone: 'GET_TRANSACTIONS_FULFILLED'
 }

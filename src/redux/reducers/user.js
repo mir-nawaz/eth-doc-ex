@@ -16,6 +16,7 @@ export default function reducer(state={
     rejected: 0,
     verified: 0
   },
+  transactions: [],
   loading: false,
   error: null,
   }, action) {
@@ -28,7 +29,6 @@ export default function reducer(state={
         return {...state, loading: false, error: action.payload}
       }
       case user.getDone: {
-        console.log(action.payload.user);
         return {
           ...state,
           loading: false,
@@ -74,6 +74,19 @@ export default function reducer(state={
           ...state,
           loading: false,
           count: action.payload
+        }
+      }
+      case user.getTransactions: {
+        return {...state, loading: true}
+      }
+      case user.getTransactionsRejected: {
+        return {...state, loading: false, error: action.payload}
+      }
+      case user.getTransactionsDone: {
+        return {
+          ...state,
+          loading: false,
+          transactions: action.payload
         }
       }
     }
