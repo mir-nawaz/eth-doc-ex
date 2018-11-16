@@ -105,3 +105,6 @@ hr {
 .Verified{
   color: #22a340 !important;
 }
+.break-word {
+  word-break: break-word;
+}

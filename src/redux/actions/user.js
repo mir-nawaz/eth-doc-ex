@@ -98,13 +98,21 @@ export function count(payload) {
 export function getTransactions(payload) {
   return function(dispatch) {
     dispatch({type: userType.getTransactions});
-    contract.documents.getCounts(payload.account, {from: payload.account})
-      .then((res)=>{
-        const transactions = [];
+    let eth = web3.instance.eth;
+    eth.getTransactionCount(payload.account, 'latest')
+      .then((current)=>{
+        let promises = [];
+        for (let i=1; i <= current; i++) {
+          promises.push(eth.getBlock(i));
+        }
+        return Promise.all(promises);
+      })
+      .then((transactions)=>{
         dispatch({type: userType.getTransactionsDone, payload: transactions});
       })
       .catch((err)=>{
         dispatch({type: userType.getTransactionsRejected, payload: err})
       });
+
   }
 }
