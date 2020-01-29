@@ -3,9 +3,15 @@ import Web3 from 'web3';
 export default new Promise(function(resolve, reject) {
   window.addEventListener('load', function() {
     let web3 = window.web3;
-    if (typeof web3 !== 'undefined') {
+    if (typeof web3 !== 'undefined' && window.ethereum) {
     //if (false) {
       web3 = new Web3(web3.currentProvider);
+      try {
+        // Request account access if needed
+        ethereum.enable().then(()=> console.log);
+      } catch (error) {
+          // User denied account access...
+      }
       resolve(web3);
     }
     else {
